@@ -10,6 +10,8 @@ const handleRouter = (app) => {
     router.post('/createUser', userController.handleCreateUser)
     router.post('/getUser', userController.handleGetUser)
     router.post('/getUserInfo', checkUserJWT, userController.handleGetUserInfo)
+    router.post('/updateUserInfo', checkUserJWT, userController.handleUpdateUserInfo)
+
 
     router.post('/createPost', checkUserJWT, userController.handleCreatePost)
     router.post('/deletePost', checkUserJWT, userController.handleDeletePost)
@@ -23,6 +25,8 @@ const handleRouter = (app) => {
 
     router.post('/createComment1', checkUserJWT, userController.handleCreateComment1)
     router.post('/deleteComment1', checkUserJWT, userController.handleDeleteComment1)
+
+    router.post('/createlikePosts', userController.handleCreateLikePosts)
 
 
 

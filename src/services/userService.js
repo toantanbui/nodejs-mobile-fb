@@ -4,6 +4,12 @@ const _ = require('lodash');
 import { createJWT } from "../middleware/JWTAction"
 import uploadImage from '../model/upload_image'
 
+const mongoose = require('mongoose');
+
+const ObjectId = mongoose.Types.ObjectId
+//_.isEmpty(mang) true là mảng rỗng, false mảng có phần từ
+
+
 let handleCreateUser = async (data) => {
     if (!data.email || !data.password) {
         return {
@@ -305,7 +311,8 @@ let handleGetPostByTime = async (req) => {
             password: dataUser.password
         })
         if (!_.isEmpty(data1)) {
-
+            console.log('check', !_.isEmpty(data1))
+            console.log('user tim được', data1)
             let data11 = await modelMongoDB.posts.find({
 
             })
@@ -627,6 +634,166 @@ let handleDeleteComment1 = async (req) => {
 
 
 
+let handleCreateLikePosts = async (req) => {
+    let data = req.body;
+    let dataUser = req.user;
+    console.log("request data", data)
+    if (!data.idPosts || !data.idUsers) {
+        return {
+            errCode: 1,
+            errMessage: "Missing paramater",
+        }
+    } else {
+
+
+        let data1 = await modelMongoDB.posts.aggregate([{ $match: { "_id": ObjectId(data.idPosts) } }, { $unwind: "$likeStatus" }, { $match: { "likeStatus.idUsers": data.idUsers } }])
+        console.log('giá tri can tim', data1, _.isEmpty(data1))
+
+
+
+        if (!_.isEmpty(data1)) {
+
+
+            if (data.status === 'true') {
+
+                await modelMongoDB.posts.updateOne(
+                    {
+                        _id: data.idPosts
+                    }, {
+                    $set: {
+                        "likeStatus.$[filter]": {
+                            idUsers: data.idUsers,
+                            status: true
+                        }
+                    }
+                    , $inc: { likes: 1 }
+                },
+
+                    {
+                        arrayFilters: [{
+                            "filter.idUsers": data.idUsers
+                        }]
+                    },
+
+
+                )
+
+
+
+            } else {
+
+                await modelMongoDB.posts.updateOne(
+                    {
+                        _id: data.idPosts
+                    }, {
+                    $set: {
+                        "likeStatus.$[filter]": {
+                            idUsers: data.idUsers,
+                            status: false
+                        }
+                    }
+                    , $inc: { likes: -1 }
+                },
+
+                    {
+                        arrayFilters: [{
+                            "filter.idUsers": data.idUsers
+                        }]
+                    },
+
+
+                )
+
+            }
+
+
+            return {
+                errCode: 0,
+                errMessage: "Create Comment successful",
+
+
+            }
+        }
+        else {
+
+            await modelMongoDB.posts.updateOne(
+                {
+                    _id: data.idPosts
+                }, {
+                $push: {
+                    likeStatus: {
+
+                        idUsers: data.idUsers,
+                        status: true
+                    }
+
+                },
+                $inc: { likes: 1 }
+            }
+            )
+
+            return {
+                errCode: 0,
+                errMessage: "first Likes",
+
+
+            }
+
+        }
+
+
+
+
+
+
+
+
+    }
+}
+
+
+let handleUpdateUserInfo = async (req) => {
+    let data = req.body;
+
+    console.log("request data", data)
+    if (!data.idUsers) {
+        return {
+            errCode: 1,
+            errMessage: "Missing paramater",
+        }
+    } else {
+
+
+
+        await modelMongoDB.users.updateOne(
+            {
+                _id: data.idUsers
+            }, {
+            lastName: data.lastName,
+            firstName: data.firstName,
+            password: data.password,
+            // avatar: data.avatar,
+            // backgroundImage: data.backgroundImage,
+            age: data.age,
+        }
+
+
+        )
+        return {
+            errCode: 0,
+            errMessage: "Update user successful",
+
+        }
+
+
+
+
+    }
+}
+
+
+
+
 module.exports = {
     handleCreateUser: handleCreateUser,
     handleGetUser: handleGetUser,
@@ -638,11 +805,15 @@ module.exports = {
     handleGetPostByPersonalPage: handleGetPostByPersonalPage,
     handleGetPostsInfo: handleGetPostsInfo,
 
+    handleUpdateUserInfo: handleUpdateUserInfo,
+
     handleCreateComment: handleCreateComment,
     handleDeleteComment: handleDeleteComment,
 
     handleCreateComment1: handleCreateComment1,
-    handleDeleteComment1: handleDeleteComment1
+    handleDeleteComment1: handleDeleteComment1,
+
+    handleCreateLikePosts: handleCreateLikePosts
 
 
 }

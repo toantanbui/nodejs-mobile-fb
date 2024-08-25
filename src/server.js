@@ -1,9 +1,9 @@
 import express from 'express';
 import router from './route/router'
-import connectDB from './connectDB/connectDBMongo';
+
 import bodyParser from 'body-parser';
 
-const User = require('./model/modelMongoDB')
+
 require('dotenv').config();
 
 const app = express();
@@ -35,55 +35,3 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
 router.handleRouter(app)
 
 
-// const newUser = new User.users({
-//     firstName: "Toan",
-//     lastName: "Toan",
-//     age: "24",
-//     email: "t1@gmail.com",
-//     password: "12324",
-//     post: [
-//         {
-//             postName: "Bai viet 1",
-//             postContent: "Noi dung 1",
-
-//             comment: [
-//                 {
-//                     fistName: "A",
-//                     lastName: "Nguyen",
-//                     content: "Bai viet do",
-
-//                 },
-//                 {
-//                     fistName: "B",
-//                     lastName: "Nguyen",
-//                     content: "Bai viet hay",
-
-//                 }
-//             ]
-
-//         },
-//         {
-//             postName: "Bai viet 2",
-//             postContent: "Noi dung 2",
-
-//             comment: [
-//                 {
-//                     fistName: "B",
-//                     lastName: "Nguyen",
-//                     content: "Bai viet do",
-
-//                 }
-//             ]
-
-//         }
-//     ]
-
-// })
-// newUser.save()
-//     .then(() => {
-//         console.log('User saved successfully!');
-
-//     })
-//     .catch(err => {
-//         console.error('Error saving user:', err);
-//     });

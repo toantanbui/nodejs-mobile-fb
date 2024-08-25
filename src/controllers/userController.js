@@ -256,6 +256,49 @@ let handleDeleteComment1 = (req, res) => {
 }
 
 
+let handleCreateLikePosts = (req, res) => {
+
+    userService.handleCreateLikePosts(req)
+        .then((data) => {
+
+            console.log("data la", data)
+            return res.status(200).json(data)
+        })
+        .catch((e) => {
+
+            console.log(e)
+            return res.status(200).json({
+                errCode: -1,
+                errMessage: 'sever error'
+            })
+        })
+
+
+
+}
+
+let handleUpdateUserInfo = (req, res) => {
+
+    userService.handleUpdateUserInfo(req)
+        .then((data) => {
+
+            console.log("data la", data)
+            return res.status(200).json(data)
+        })
+        .catch((e) => {
+
+            console.log(e)
+            return res.status(200).json({
+                errCode: -1,
+                errMessage: 'sever error'
+            })
+        })
+
+
+
+}
+
+
 
 
 
@@ -270,11 +313,16 @@ module.exports = {
     handleGetPostByPersonalPage: handleGetPostByPersonalPage,
     handleGetPostsInfo: handleGetPostsInfo,
 
+    handleUpdateUserInfo: handleUpdateUserInfo,
+
     handleCreateComment: handleCreateComment,
     handleDeleteComment: handleDeleteComment,
 
     handleCreateComment1: handleCreateComment1,
-    handleDeleteComment1: handleDeleteComment1
+    handleDeleteComment1: handleDeleteComment1,
+
+    handleCreateLikePosts: handleCreateLikePosts,
+
 
 
 }
