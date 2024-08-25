@@ -54,6 +54,7 @@ const schema2 = new Schema({
             idUsers: String,
             firstName: String,
             lastName: String,
+            avatar: Buffer,
             time: {
                 type: Date,
                 default: Date.now
@@ -75,6 +76,7 @@ const schema2 = new Schema({
                     idUsers: String,
                     firstName: String,
                     lastName: String,
+                    avatar: Buffer,
                     time: {
                         type: Date,
                         default: Date.now

@@ -1,6 +1,7 @@
 import express from 'express';
 import router from './route/router'
 import connectDB from './connectDB/connectDBMongo';
+import bodyParser from 'body-parser';
 
 const User = require('./model/modelMongoDB')
 require('dotenv').config();
@@ -26,10 +27,10 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use(bodyParser.json({ limit: '50mb' }))
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
 
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 
 router.handleRouter(app)
 

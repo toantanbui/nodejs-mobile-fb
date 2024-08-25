@@ -2,6 +2,7 @@
 import modelMongoDB from "../model/modelMongoDB"
 const _ = require('lodash');
 import { createJWT } from "../middleware/JWTAction"
+import uploadImage from '../model/upload_image'
 
 let handleCreateUser = async (data) => {
     if (!data.email || !data.password) {
@@ -121,7 +122,7 @@ let handleCreatePost = async (req) => {
                 return {
                     errCode: 0,
                     errMessage: "Create posts successful",
-                    data: dataPosts
+                    //  data: dataPosts
 
                 }
             } else {
@@ -186,7 +187,7 @@ let handleCreateComment = async (req) => {
     let data = req.body;
     let dataUser = req.user;
     console.log("request data", data)
-    if (!data.idPosts) {
+    if (!data.idPosts || !data.commentContent) {
         return {
             errCode: 1,
             errMessage: "Missing paramater",
@@ -308,7 +309,7 @@ let handleGetPostByTime = async (req) => {
             let data11 = await modelMongoDB.posts.find({
 
             })
-                .sort({ time: -1 })
+                .sort({ createdAt: -1 })
                 .limit(10)
 
             if (!_.isEmpty(data11)) {
@@ -398,16 +399,250 @@ let handleGetPostByPersonalPage = async (req) => {
 }
 
 
+let handleGetUserInfo = async (req) => {
+    let data = req.body;
+    let dataUser = req.user;
+
+    if (!data.idUsers) {
+        return {
+            errCode: 1,
+            errMessage: "Missing paramater",
+        }
+    } else {
+        let data1 = await modelMongoDB.users.find({
+            email: dataUser.email,
+            password: dataUser.password
+        })
+        if (!_.isEmpty(data1)) {
+
+            let data11 = await modelMongoDB.users.find({
+                _id: data.idUsers
+            })
+
+
+            if (!_.isEmpty(data11)) {
+                return {
+                    errCode: 0,
+                    errMessage: 'success',
+                    data: data11
+                }
+            } else {
+                return {
+                    errCode: 3,
+                    errMessage: 'Not found',
+
+                }
+            }
+
+
+
+        } else {
+            return {
+                errCode: 1,
+                errMessage: "Your account and password are not accurate or have changed",
+
+            }
+
+        }
+
+
+
+
+    }
+}
+
+let handleGetPostsInfo = async (req) => {
+    let data = req.body;
+    let dataUser = req.user;
+
+    if (!data.idPosts) {
+        return {
+            errCode: 1,
+            errMessage: "Missing paramater",
+        }
+    } else {
+        let data1 = await modelMongoDB.users.find({
+            email: dataUser.email,
+            password: dataUser.password
+        })
+        if (!_.isEmpty(data1)) {
+
+            let data11 = await modelMongoDB.posts.find({
+                _id: data.idPosts
+            })
+
+
+            if (!_.isEmpty(data11)) {
+                return {
+                    errCode: 0,
+                    errMessage: 'success',
+                    data: data11
+                }
+            } else {
+                return {
+                    errCode: 3,
+                    errMessage: 'Not found',
+
+                }
+            }
+
+
+
+        } else {
+            return {
+                errCode: 1,
+                errMessage: "Your account and password are not accurate or have changed",
+
+            }
+
+        }
+
+
+
+
+    }
+}
+
+let handleCreateComment1 = async (req) => {
+    let data = req.body;
+    let dataUser = req.user;
+    console.log("request data", data)
+    if (!data.idPosts || !data.commentContent || !data.idComment) {
+        return {
+            errCode: 1,
+            errMessage: "Missing paramater",
+        }
+    } else {
+        let data1 = await modelMongoDB.users.find({
+            email: dataUser.email,
+            password: dataUser.password
+        })
+        if (!_.isEmpty(data1)) {
+
+            await modelMongoDB.posts.updateOne(
+                {
+                    _id: data.idPosts
+                }, {
+                $push: {
+                    "comment.$[filter].comment1": {
+
+                        idUsers: data.idUsers,
+                        firstName: data.firstName,
+                        lastName: data.lastName,
+
+                        commentContent: data.commentContent,
+                        commentImage: data.commentImage,
+                    }
+
+                }
+            },
+                {
+                    arrayFilters: [{
+                        "filter._id": data.idComment
+                    }]
+                }
+
+
+
+
+            )
+            return {
+                errCode: 0,
+                errMessage: "Create Comment successful",
+
+            }
+
+        } else {
+            return {
+                errCode: 1,
+                errMessage: "Your account and password are not accurate or have changed",
+
+            }
+
+        }
+
+
+    }
+}
+
+
+
+
+let handleDeleteComment1 = async (req) => {
+    let data = req.body;
+    let dataUser = req.user;
+    if (!data.idPosts || data.idComment || data.idComment1) {
+        return {
+            errCode: 1,
+            errMessage: "Missing paramater",
+        }
+    } else {
+        let data1 = await modelMongoDB.users.find({
+            email: dataUser.email,
+            password: dataUser.password
+        })
+        if (!_.isEmpty(data1)) {
+            await modelMongoDB.posts.updateOne(
+                {
+                    _id: data.idPosts
+                }, {
+                $pull: {
+                    "comment.$[filter].comment1": {
+                        _id: data.idComment1
+                    }
+                }
+            },
+                {
+                    arrayFilters: [{
+                        "filter._id": data.idComment
+                    }]
+                }
+
+
+
+            )
+            return {
+                errCode: 0,
+                errMessage: "Delete successful",
+
+            }
+
+
+
+        } else {
+            return {
+                errCode: 1,
+                errMessage: "Your account and password are not accurate or have changed",
+
+            }
+
+        }
+
+
+
+    }
+
+}
+
+
+
 
 module.exports = {
     handleCreateUser: handleCreateUser,
     handleGetUser: handleGetUser,
+    handleGetUserInfo: handleGetUserInfo,
 
     handleCreatePost: handleCreatePost,
     handleDeletePost: handleDeletePost,
     handleGetPostByTime: handleGetPostByTime,
     handleGetPostByPersonalPage: handleGetPostByPersonalPage,
+    handleGetPostsInfo: handleGetPostsInfo,
 
     handleCreateComment: handleCreateComment,
-    handleDeleteComment: handleDeleteComment
+    handleDeleteComment: handleDeleteComment,
+
+    handleCreateComment1: handleCreateComment1,
+    handleDeleteComment1: handleDeleteComment1
+
+
 }

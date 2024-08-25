@@ -171,16 +171,110 @@ let handleGetPostByPersonalPage = (req, res) => {
 
 }
 
+let handleGetUserInfo = (req, res) => {
+
+    userService.handleGetUserInfo(req)
+        .then((data) => {
+
+            console.log("data la", data)
+            return res.status(200).json(data)
+        })
+        .catch((e) => {
+
+            console.log(e)
+            return res.status(200).json({
+                errCode: -1,
+                errMessage: 'sever error'
+            })
+        })
+
+
+
+}
+
+let handleGetPostsInfo = (req, res) => {
+
+    userService.handleGetPostsInfo(req)
+        .then((data) => {
+
+            console.log("data la", data)
+            return res.status(200).json(data)
+        })
+        .catch((e) => {
+
+            console.log(e)
+            return res.status(200).json({
+                errCode: -1,
+                errMessage: 'sever error'
+            })
+        })
+
+
+
+}
+
+let handleCreateComment1 = (req, res) => {
+
+    userService.handleCreateComment1(req)
+        .then((data) => {
+
+            console.log("data la", data)
+            return res.status(200).json(data)
+        })
+        .catch((e) => {
+
+            console.log(e)
+            return res.status(200).json({
+                errCode: -1,
+                errMessage: 'sever error'
+            })
+        })
+
+
+
+}
+
+let handleDeleteComment1 = (req, res) => {
+
+    userService.handleDeleteComment1(req)
+        .then((data) => {
+
+            console.log("data la", data)
+            return res.status(200).json(data)
+        })
+        .catch((e) => {
+
+            console.log(e)
+            return res.status(200).json({
+                errCode: -1,
+                errMessage: 'sever error'
+            })
+        })
+
+
+
+}
+
+
+
+
 
 module.exports = {
     handleCreateUser: handleCreateUser,
     handleGetUser: handleGetUser,
+    handleGetUserInfo: handleGetUserInfo,
 
     handleCreatePost: handleCreatePost,
     handleDeletePost: handleDeletePost,
     handleGetPostByTime: handleGetPostByTime,
     handleGetPostByPersonalPage: handleGetPostByPersonalPage,
+    handleGetPostsInfo: handleGetPostsInfo,
 
     handleCreateComment: handleCreateComment,
-    handleDeleteComment: handleDeleteComment
+    handleDeleteComment: handleDeleteComment,
+
+    handleCreateComment1: handleCreateComment1,
+    handleDeleteComment1: handleDeleteComment1
+
+
 }

@@ -9,14 +9,22 @@ const handleRouter = (app) => {
     })
     router.post('/createUser', userController.handleCreateUser)
     router.post('/getUser', userController.handleGetUser)
+    router.post('/getUserInfo', checkUserJWT, userController.handleGetUserInfo)
 
     router.post('/createPost', checkUserJWT, userController.handleCreatePost)
     router.post('/deletePost', checkUserJWT, userController.handleDeletePost)
     router.get('/getPostByTime', checkUserJWT, userController.handleGetPostByTime)
     router.post('/getPostByPersonalPage', checkUserJWT, userController.handleGetPostByPersonalPage)
+    router.post('/getPostsInfo', checkUserJWT, userController.handleGetPostsInfo)
+
 
     router.post('/createComment', checkUserJWT, userController.handleCreateComment)
     router.post('/deleteComment', checkUserJWT, userController.handleDeleteComment)
+
+    router.post('/createComment1', checkUserJWT, userController.handleCreateComment1)
+    router.post('/deleteComment1', checkUserJWT, userController.handleDeleteComment1)
+
+
 
     return app.use('/', router)
 }
