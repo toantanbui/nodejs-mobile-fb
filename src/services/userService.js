@@ -372,7 +372,11 @@ let handleGetPostByPersonalPage = async (req) => {
                 _id: data.idUsers
 
             })
-                .populate('posts')
+                .populate({
+                    path: 'posts',
+                    options: { sort: { createdAt: -1 } }
+                })
+
 
             if (!_.isEmpty(data11)) {
                 return {
