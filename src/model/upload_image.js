@@ -45,6 +45,7 @@ const setFilePublic = async (fileId) => {
 const uploadFile = async (base64Image) => {
     try {
         const filename = 'ten-tam.png'
+        // code chuyển base64 sang dạng nhị phân
         const buffer = Buffer.from(base64Image.split(',')[1], 'base64');
         // const buffer = new Buffer(base64Image, 'base64').toString('binary')
         console.log('buffer', buffer)

@@ -38,7 +38,7 @@ let handleCreateUser = async (data) => {
 }
 
 let handleGetUser = async (data) => {
-    // console.log("data request ", data)
+    console.log("data request ", data)
     if (!data.email || !data.password) {
         return {
             errCode: 1,
@@ -51,7 +51,7 @@ let handleGetUser = async (data) => {
         })
 
         if (!_.isEmpty(data1)) {
-            let token1 = createJWT({
+            let token1 = await createJWT({
                 email: data.email,
                 password: data.password
             })
@@ -95,6 +95,8 @@ let handleCreatePost = async (req) => {
                 password: dataUser.password
             })
             if (!_.isEmpty(data1)) {
+
+                uploadImage.uploadFile(data.postsImage)
 
                 let dataPosts = await modelMongoDB.posts.create({
 
